@@ -15,35 +15,48 @@ char playerName[20];
 card deck[]; // dynamic array (or linked list) of cards
 int decksize; // how many cards the player currently holds
 } player;
-Required Functions
 
+
+Required Functions
 // Required Functions
 
+
 // BASIC DECK AND HAND CREATION
+
 // Creates a standard deck of 100 cards (two sets of 0-9 for each color, plus the special cards)
 void initializeDeck(card deck[], int deckSize);
+
 // Shuffle deck
 void shuffleDeck(card deck[]);
+
 // Draw a single card from the deck and place it in a player's hand. Return 1 if the draw was successful, 0 if deck is empty.
 int drawCard(card deck[], int deckSize, player p);
 
 
 // UNO GAMEPLAY RULES
+
+
 // Check if a candidate card is valid to play on the top-of-pile card. Return 1 if valid, 0 otherwise.
 int isValidCard(card topOfPile, card candidate);
+
 // Handle effect of AND card. This could check the next player’s hand for the correct color AND number (return 1), or apply a penalty if they cannot match (return 0)
 int handleAND(player currentPlayer, card topOfPile);
+
 // Handle effect of OR card. Similar logic, except the next player must match color OR number or face the penalty.
 int handleOR(player currentPlayer, card topOfPile);
+
 // Handle effect of NOT card (aka SKIP card).
 int handleNOT(int currentPlayerIndex, int playerCount);
+
 // Handle effect of Reverse card (reverse the turn order or in a two-player game, let current player go again
 void handleReverse(int reverseFlag, int currentPlayerIndex, int playerCount);
 
 
 // DISPLAY CARDS
+
 // Print a single card (e.g., "Red 5", "Blue 0", "AND", "Reverse", etc.).
 void printCard(card c);
+
 // Print the hand of a given player (their name + the cards).
 void printPlayerHand(player p);
 
