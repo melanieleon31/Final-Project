@@ -32,7 +32,7 @@ typedef struct player_t {
 void printOrdinal(int numOfPlayer);
 
 //void printCard(card c);
-//void printPlayerHand(player p);
+//void printPlayerHand(player *p);
 
 
 // main function - - - - - - - - - -
