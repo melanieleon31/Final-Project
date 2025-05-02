@@ -1,5 +1,7 @@
 # Final-Project
 
+5/1/2025 10:43 PM almost got the print hand function working, but the spacing is wrong. Updated in construction code file
+
 Made changes to the shuffle function so it could generate two random numbers to swap two cards. This should repeat 10000 times
 
 Removed struct card and struct player from the main function since typedef already defined the structure throughout the program 
