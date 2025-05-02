@@ -230,7 +230,7 @@ void printCard(card c) {
 }
 
 // Print the hand of a given player (their name + the cards).
-// FIXME: this doesnt work :(
+// FIXME: some sort of formatting issue? not sure where yet
 void printPlayerHand(player *p) {
     int i;
     
