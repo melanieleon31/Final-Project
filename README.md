@@ -1,7 +1,10 @@
 # Final-Project
 
+5/5: 8:26
+Created while loop so code the game can loop is user wants to play again 
+
 5/5/2025 7:54
-Created handleAnd function, trying to also create more of main body code
+Created handleAnd function, trying to also create more of main body code. 
 
 5/1/2025 10:43 PM almost got the print hand function working, but the spacing is wrong. Updated in construction code file
 
