@@ -8,11 +8,12 @@
 #define MAX_PLAYERS 14 
 #define MIN_PLAYERS 2
 #define MAX_SHUFFLE 10000
+#define DRAW_PENALTY 4
 
-typedef struct card_s {
+typedef struct card_t {
     char name; // ’0’-‘9’ for number cards, ‘A’ for AND, ‘O’ for OR, ‘N’ for NOT, and ‘R’ for Reverse.
     char color; // ’R’ for red, ‘Y’ for yellow, ‘G’ for green, ‘B’ for blue, and ‘S’ for special cards
-    struct card_s *listp;
+    struct card_t *listp;
 } card;
 
 // Each player has a name, deck, and the number of cards in their hands. (made deck a pointer to cards because the player might draw or lose cards)
@@ -43,6 +44,10 @@ int isValidCard(played_pile* pile, card candidate);
 void addCard(played_pile *pile, char name, char color);
 void printTopCard(played_pile *pile);
 void freePile(played_pile *pile);
+
+// // Handle effect of AND card. This could check the next player’s hand for the correct color AND number (return 1), or apply a penalty if they cannot match (return 0)
+int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
+
 
 
 // test functions - - - - - - - - - -
@@ -389,4 +394,53 @@ void freePile(played_pile *pile) {
         free(temp);
     }
     free(pile);
+}
+
+// Handle effect of AND card. This could check the next player’s hand for the correct color AND number (return 1), or apply draw 4 penalty if they cannot match (return 0)
+int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile){
+    
+    // Iterate through the next player's hand to find a matching card
+	    for (int i = 0; i < nextPlayer->decksize; i++) {
+	        if (nextPlayer->deck[i].color == topOfPile.color && nextPlayer->deck[i].name == topOfPile.name) {
+	            
+	            printf("Card Matches, no AND penalty\n);
+	
+	            // Store the card to be added to the pile
+	            card playedCard = nextPlayer->deck[i];
+	
+	            // Remove the card from the player's hand (shift the cards to fill the gap)
+	            for (int j = i; j < nextPlayer->decksize - 1; j++) {
+	                nextPlayer->deck[j] = nextPlayer->deck[j + 1];
+	            }
+	            nextPlayer->decksize--; // Decrease deck size since player has one less card
+	
+	            // Add the played card to the pile
+	            addCard(pile, playedCard.name, playedCard.color);
+	
+	            return 1;  // Return after a match is found
+	        }
+	    }
+	
+	    // If no match is found, the player must draw 4 cards
+	    printf("%s has no card that matches %s and %d\n", nextPlayer->playerName, topOfPile.color, topOfPile.name);
+	    printf("\n");
+	    printf("AND penalty, Draw 4\n");
+	
+	    // Draw 4 cards from the deck and add to the player's hand
+	    for (int i = 0; i < DRAW_PENALTY; i++) {
+	        if (*deckIndex < MAX_CARDS) {
+	            // Reallocate memory for the player's deck if necessary
+	            card *newDeck = realloc(nextPlayer->deck, (nextPlayer->decksize + 1) * sizeof(card));
+	            if (newDeck == NULL) {
+	                printf("Failed to allocate memory while drawing cards.\n");
+	                return -1;
+	            }
+	            nextPlayer->deck = newDeck;
+	            nextPlayer->deck[nextPlayer->decksize] = gameDeck[*deckIndex]; // Add a new card
+	            nextPlayer->decksize++; // Increment deck size
+	            (*deckIndex)++; // Move to the next card in the deck
+	        }
+	    }
+	
+	    return 0;  // Return 0 if no match is found, and the player has drawn 4 cards
 }
