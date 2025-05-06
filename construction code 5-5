@@ -46,7 +46,7 @@ void printTopCard(played_pile *pile);
 void freePile(played_pile *pile);
 
 // // Handle effect of AND card. This could check the next player’s hand for the correct color AND number (return 1), or apply a penalty if they cannot match (return 0)
-int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
+//int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
 
 
 
@@ -77,9 +77,13 @@ int main() {
     int i, j, numPlayers;
     int cardIndex = 0;
     card gameDeck[MAX_CARDS];
+    
+    
     initializeDeck(gameDeck, MAX_CARDS);
     shuffleDeck(gameDeck);
     char playAgain = 'y';   // Initialize with y
+    int firstCard;    // Store first user's index to add to pile
+    int firstCardCheck = 0;
     
     // Game will repeat until user enters Y or y
     while (playAgain != 'n' && playAgain != 'N'){
@@ -134,14 +138,51 @@ int main() {
             printPlayerHand(&players[i]);
         }
         
+        printf("\nCard pile is empty\n");
+        
         // creates the pile for players to put cards on
         played_pile *pile = createPile();
+        
+        // Prompts the first player to add the first card to the pile
+        while (firstCardCheck == 0){
+            printf("%s, enter which card to play from 0 to 6: \n", players[0].playerName);
+            scanf("%d", &firstCard);
+            getchar();
+            
+            if (firstCard < 0 || firstCard > 6){
+                printf("Invalid choice, %s does not have %d cards\n", players[0].playerName, firstCard + 1);
+            }
+            else if (players[0].deck[firstCard].name =='A' || players[0].deck[firstCard].name =='O' || players[0].deck[firstCard].name =='N' || players[0].deck[firstCard].name =='R') {
+               printf("Invalid choice, first pile card cannot be a special card\n");
+            }
+            else {
+                firstCardCheck = 1;  // Valid card selected
+            }
+    
+        }
+        
+        // Add the first card to the pile
+        card played = players[0].deck[firstCard];
+        addCard(pile, played.name, played.color);
+
+        // Remove the card from the player's hand
+        for (j = firstCard; j < players[0].decksize - 1; j++) {
+            players[0].deck[j] = players[0].deck[j + 1];
+        }
+        players[0].decksize--;  // Update deck size now that first player has one fewer card
+
+        
     
         // !! - - - placeholder: where the main game (loop?) should probably go - - - !!
+        /*while (){
+            mmmm
+        
         
         // adds and prints the card at the top of the pile
         addCard(pile, '5', 'R'); // Red 5
         printTopCard(pile); // should print "Top of card pile is: Red 5"
+        
+        }*/
         
         // frees the memory of the pile
         freePile(pile);
@@ -410,7 +451,7 @@ void freePile(played_pile *pile) {
 }
 
 // Handle effect of AND card. This could check the next player’s hand for the correct color AND number (return 1), or apply draw 4 penalty if they cannot match (return 0)
-int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile){
+/*int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile){
     
     // Iterate through the next player's hand to find a matching card
     for (int i = 0; i < nextPlayer->decksize; i++) {
@@ -456,4 +497,4 @@ int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int
     }
 	
 	    return 0;  // Return 0 if no match is found, and the player has drawn 4 cards
-}
+}*/
