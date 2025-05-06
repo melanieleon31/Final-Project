@@ -77,77 +77,90 @@ int main() {
     int i, j, numPlayers;
     int cardIndex = 0;
     card gameDeck[MAX_CARDS];
-    
     initializeDeck(gameDeck, MAX_CARDS);
     shuffleDeck(gameDeck);
+    char playAgain = 'y';   // Initialize with y
     
-    // Get the number of players
-    printf("Enter number of players: ");
-    scanf("%d", &numPlayers);
-    getchar();   // discard left over characters 
-    
-    if (numPlayers >= MIN_PLAYERS && numPlayers <= MAX_PLAYERS){
-        printf("\n");
-    }
-    
-    // Array of players to store multiple player information
-    player players[numPlayers];
-    
-    while (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
-        printf("\n");
-        printf("Invalid! Please enter a number of players between %d and %d\n", MIN_PLAYERS, MAX_PLAYERS);
+    // Game will repeat until user enters Y or y
+    while (playAgain != 'n' && playAgain != 'N'){
+        
+        // Get the number of players
+        printf("Enter number of players: \n");
         scanf("%d", &numPlayers);
         getchar();   // discard left over characters 
+        
+        if (numPlayers >= MIN_PLAYERS && numPlayers <= MAX_PLAYERS){
+            printf("\n");
+        }
+        
+        // Array of players to store multiple player information
+        player players[numPlayers];
+        
+        while (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
+            printf("\n");
+            printf("Invalid! Please enter a number of players between %d and %d\n", MIN_PLAYERS, MAX_PLAYERS);
+            scanf("%d", &numPlayers);
+            getchar();   // discard left over characters 
+            printf("\n");
+        }
+        
+        // Get player names 
+        for (i = 0; i < numPlayers; i++) {
+            printf("Enter ");
+            printOrdinal(i + 1); // Print (first, second...)
+            printf(" player’s name: \n");
+            fgets(players[i].playerName, sizeof(players[i].playerName), stdin);
+    
+            // Trim newline from player name: use strcspn to replace newline charcter with null terminator 
+            players[i].playerName[strcspn(players[i].playerName, "\n")] = '\0';
+            
+            // Dynamically allocate memory for player's hand
+            players[i].deck = malloc(START_DECKSIZE * sizeof(card));
+    	    if (players[i].deck == NULL) {
+    	        printf("Failed to allocate memory");
+    		    return -1;  // Exit if memory could not be allocated
+    	    }
+    		    
+            players[i].decksize = START_DECKSIZE;  // Set initial hand size of 7 
+            
+            for (int j = 0; j < START_DECKSIZE; j++) {
+                players[i].deck[j] = gameDeck[cardIndex++];  // Assign card from shuffled deck, cardIndex is used to move through the cards.
+            }
+        
+        }
+        
+        // Print player's hand
+        for (int i = 0; i < numPlayers; i++) {
+            printPlayerHand(&players[i]);
+        }
+        
+        // creates the pile for players to put cards on
+        played_pile *pile = createPile();
+    
+        // !! - - - placeholder: where the main game (loop?) should probably go - - - !!
+        
+        // adds and prints the card at the top of the pile
+        addCard(pile, '5', 'R'); // Red 5
+        printTopCard(pile); // should print "Top of card pile is: Red 5"
+        
+        // frees the memory of the pile
+        freePile(pile);
+        
+        // Free the allocated memory for each player
+        for (int i = 0; i < numPlayers; i++) {
+            free(players[i].deck);
+        }  
+        
+        // Print game over message
+        // - printf("\nPlayer Two wins!\n") -- want to print the player name that wins
+        printf("\nPlay again? (y/n)?: \n");
+        scanf(" %c", &playAgain);
+        getchar(); // discard left over characters
         printf("\n");
     }
-    
-    // Get player names 
-    for (i = 0; i < numPlayers; i++) {
-        printf("Enter ");
-        printOrdinal(i + 1); // Print (first, second...)
-        printf(" player’s name: \n");
-        fgets(players[i].playerName, sizeof(players[i].playerName), stdin);
 
-        // Trim newline from player name: use strcspn to replace newline charcter with null terminator 
-        players[i].playerName[strcspn(players[i].playerName, "\n")] = '\0';
-        
-        // Dynamically allocate memory for player's hand
-        players[i].deck = malloc(START_DECKSIZE * sizeof(card));
-	    if (players[i].deck == NULL) {
-	        printf("Failed to allocate memory");
-		    return -1;  // Exit if memory could not be allocated
-	    }
-		    
-        players[i].decksize = START_DECKSIZE;  // Set initial hand size of 7 
-        
-        for (int j = 0; j < START_DECKSIZE; j++) {
-            players[i].deck[j] = gameDeck[cardIndex++];  // Assign card from shuffled deck, cardIndex is used to move through the cards.
-        }
+    printf("Goodbye\n");
     
-    }
-    
-    // Print player's hand
-    for (int i = 0; i < numPlayers; i++) {
-        printPlayerHand(&players[i]);
-    }
-    
-    // creates the pile for players to put cards on
-    played_pile *pile = createPile();
-
-    // !! - - - placeholder: where the main game (loop?) should probably go - - - !!
-    
-    // adds and prints the card at the top of the pile
-    addCard(pile, '5', 'R'); // Red 5
-    printTopCard(pile); // should print "Top of card pile is: Red 5"
-    
-    // frees the memory of the pile
-    freePile(pile);
-    
-    // Free the allocated memory for each player
-    for (int i = 0; i < numPlayers; i++) {
-        free(players[i].deck);
-    }
-
     return 0;
 }
 
@@ -400,47 +413,47 @@ void freePile(played_pile *pile) {
 int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile){
     
     // Iterate through the next player's hand to find a matching card
-	    for (int i = 0; i < nextPlayer->decksize; i++) {
-	        if (nextPlayer->deck[i].color == topOfPile.color && nextPlayer->deck[i].name == topOfPile.name) {
+    for (int i = 0; i < nextPlayer->decksize; i++) {
+	   if (nextPlayer->deck[i].color == topOfPile.color && nextPlayer->deck[i].name == topOfPile.name) {
 	            
-	            printf("Card Matches, no AND penalty\n);
+        printf("Card Matches, no AND penalty\n");
+
+        // Store the card to be added to the pile
+        card playedCard = nextPlayer->deck[i];
+
+        // Remove the card from the player's hand (shift the cards to fill the gap)
+        for (int j = i; j < nextPlayer->decksize - 1; j++) {
+            nextPlayer->deck[j] = nextPlayer->deck[j + 1];
+        }
+        nextPlayer->decksize--; // Decrease deck size since player has one less card
+
+        // Add the played card to the pile
+        addCard(pile, playedCard.name, playedCard.color);
+
+        return 1;  // Return after a match is found
+        }
+    }
 	
-	            // Store the card to be added to the pile
-	            card playedCard = nextPlayer->deck[i];
-	
-	            // Remove the card from the player's hand (shift the cards to fill the gap)
-	            for (int j = i; j < nextPlayer->decksize - 1; j++) {
-	                nextPlayer->deck[j] = nextPlayer->deck[j + 1];
-	            }
-	            nextPlayer->decksize--; // Decrease deck size since player has one less card
-	
-	            // Add the played card to the pile
-	            addCard(pile, playedCard.name, playedCard.color);
-	
-	            return 1;  // Return after a match is found
-	        }
-	    }
-	
-	    // If no match is found, the player must draw 4 cards
-	    printf("%s has no card that matches %s and %d\n", nextPlayer->playerName, topOfPile.color, topOfPile.name);
-	    printf("\n");
-	    printf("AND penalty, Draw 4\n");
-	
-	    // Draw 4 cards from the deck and add to the player's hand
-	    for (int i = 0; i < DRAW_PENALTY; i++) {
-	        if (*deckIndex < MAX_CARDS) {
-	            // Reallocate memory for the player's deck if necessary
-	            card *newDeck = realloc(nextPlayer->deck, (nextPlayer->decksize + 1) * sizeof(card));
-	            if (newDeck == NULL) {
-	                printf("Failed to allocate memory while drawing cards.\n");
-	                return -1;
-	            }
-	            nextPlayer->deck = newDeck;
-	            nextPlayer->deck[nextPlayer->decksize] = gameDeck[*deckIndex]; // Add a new card
-	            nextPlayer->decksize++; // Increment deck size
-	            (*deckIndex)++; // Move to the next card in the deck
-	        }
-	    }
+    // If no match is found, the player must draw 4 cards
+    printf("%s has no card that matches %s and %d\n", nextPlayer->playerName, topOfPile.color, topOfPile.name);
+    printf("\n");
+    printf("AND penalty, Draw 4\n");
+
+    // Draw 4 cards from the deck and add to the player's hand
+    for (int i = 0; i < DRAW_PENALTY; i++) {
+        if (*deckIndex < MAX_CARDS) {
+            // Reallocate memory for the player's deck if necessary
+            card *newDeck = realloc(nextPlayer->deck, (nextPlayer->decksize + 1) * sizeof(card));
+            if (newDeck == NULL) {
+                printf("Failed to allocate memory while drawing cards.\n");
+                return -1;
+            }
+            nextPlayer->deck = newDeck;
+            nextPlayer->deck[nextPlayer->decksize] = gameDeck[*deckIndex]; // Add a new card
+            nextPlayer->decksize++; // Increment deck size
+            (*deckIndex)++; // Move to the next card in the deck
+        }
+    }
 	
 	    return 0;  // Return 0 if no match is found, and the player has drawn 4 cards
 }
