@@ -320,17 +320,74 @@ int main() {
                     currentPlayer = handleNOT(currentPlayer, numPlayers, turnOrderPtr);
                 }
                     
-                // FIXME: results in memory error
+                // TEST ME
                 if (playedCard.name == 'R') {
                     for (k = cardChoice; k < players[currentPlayer].decksize - 1; k++) {
                         players[currentPlayer].deck[k] = players[currentPlayer].deck[k + 1];
                     }
                     players[currentPlayer].decksize--;  // can't forget to update the player's deck size
-                        
-                    handleReverse(turnOrderPtr, currentPlayerPtr, numPlayers);
+                    
+                    addCard(pile, playedCard.name, playedCard.color);
+                    printTopCard(pile);
+                    
+                    if (numPlayers == 2){  // FIX ME: could add index options?
+                        printf("\n%s, enter which card to play from 0 to %d: \n", players[currentPlayer].playerName, players[currentPlayer].decksize - 1);
+                        scanf("%d", &cardChoice);
+                        getchar();
+                        printf("\n");
+                    }
+                    else {
+                        printf("\n%s, enter which card to play from 0 to %d and the turn order will change: \n", players[currentPlayer].playerName, players[currentPlayer].decksize - 1);
+                        scanf("%d", &cardChoice);
+                        getchar();
+                        printf("\n");
+                    }
+                    
+                    // make sure card choice is valid
+                    while (cardChoice < 0 || cardChoice >= players[currentPlayer].decksize) {
+                        printf("Invalid choice, %s enter which card to play from 0 to %d: \n", players[currentPlayer].playerName, players[currentPlayer].decksize - 1);
+                        scanf("%d", &cardChoice);
+                        getchar();
+                    }
+                    
+                    // Continue game with the player's card
+                    playedCard = players[currentPlayer].deck[cardChoice];
+                    
+                    
+                    while ( isValidCard(pile, playedCard) == 0 ) {
+                        printf("\n");
+                        printf("Invalid choice, cannot play ");
+                        printCard(playedCard);
+                        printf(" on "); 
+                        printCard(topCard); 
+                        printf("\n");
+                            
+                        printf("\n");
+                        printf("%s, enter which card to play from 0 to %d: \n", players[currentPlayer].playerName, (players[currentPlayer].decksize - 1));
+                        scanf("%d", &newCardChoice);
+                        getchar();
+    
+        
+                        playedCard = players[currentPlayer].deck[cardChoice];
+                    }
+                    
+                    
+                    // add card to pile
+                    addCard(pile, playedCard.name, playedCard.color);
+                    printTopCard(pile);
+                
+                    // Remove the card from the player's hand
+                    for (k = cardChoice; k < players[currentPlayer].decksize - 1; k++) {
+                        players[currentPlayer].deck[k] = players[currentPlayer].deck[k + 1];
+                    }
+                    
+                    players[currentPlayer].decksize--;  // can't forget to update the player's deck size 
+                    handleReverse(turnOrderPtr, currentPlayerPtr, numPlayers); // reverse the turn order
+                    
+                    continue;
                 }
                     
-                continue;
+                
             }
                 
             while ( isValidCard(pile, playedCard) == 0 ) {
