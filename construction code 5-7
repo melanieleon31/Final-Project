@@ -79,7 +79,7 @@ int main() {
 
     int i, j, k, numPlayers, cardChoice, newCardChoice, nextPlayer;
     int *jPtr = &j;
-    int validCount = 0;
+    int ValidCount = 0;
     char playAgain = 'y';   // initialize with y so we play at least once
     
     // Keep asking if the user wants to play again until they say 'no'
@@ -194,7 +194,7 @@ int main() {
                 
             // resets validity increments
             i = 0;
-            validCount = 0;
+            ValidCount = 0;
                 
             // prints out each player's hand and the top card of the pile each round
             for (k = 0; k < numPlayers; k++) {
@@ -206,14 +206,15 @@ int main() {
             for (i = 0; i < players[currentPlayer].decksize; i++) {
                 card userCard = players[currentPlayer].deck[i];
                     
-                if (isValidCard(pile, userCard) == 1){
-                    validCount++;
+                if ( isValidCard(pile, userCard) == 1 ) {
+                    ValidCount++;
                 }
             }
                 
             // if the user has no cards that match, forces them to draw and skips entry
-            if (validCount == 0) {
+            if (ValidCount == 0) {
                 if ( drawCard(gameDeck, gameDeckSizePtr, &players[currentPlayer]) == 1 ) {
+                    printf("\n");
                     printf("%s has no card that matches %c or %c, draw one and skip turn.\n", players[currentPlayer].playerName, pile->top->color, pile->top->name);
                     currentPlayer = (currentPlayer + turnOrder + numPlayers) % numPlayers;;
                     continue;
@@ -256,9 +257,6 @@ int main() {
                 playedCard = players[currentPlayer].deck[cardChoice];
             }
             
-            
-            
-            // FIXME: "and" and "or" functions act wonky since taking out the "for" loop, sometimes skip/don't skip when the opposite is wanted
             // runs if a special card is played
             if (playedCard.color == 'S') {
                 if (playedCard.name == 'A') {
@@ -277,7 +275,7 @@ int main() {
                         currentPlayer = (currentPlayer + 2) % numPlayers;
                     }
                     else {
-                        currentPlayer = (currentPlayer - 2) % numPlayers;
+                        currentPlayer = (currentPlayer - 2 + numPlayers) % numPlayers;
                     }
                     
                     if (andValid == 0) {
@@ -304,7 +302,7 @@ int main() {
                         currentPlayer = (currentPlayer + 2) % numPlayers;
                     }
                     else {
-                        currentPlayer = (currentPlayer - 2) % numPlayers;
+                        currentPlayer = (currentPlayer - 2 + numPlayers) % numPlayers;
                     }
                     
                     if (orValid == 0) {
@@ -358,6 +356,17 @@ int main() {
                     // Continue game with the player's card
                     playedCard = players[currentPlayer].deck[cardChoice];
                     
+                    if ( playedCard.color == 'S' ) {
+                        printf("Invalid choice, cannot play two special cards on each other.\n");
+                            
+                        printf("\n");
+                        printf("%s, enter which card to play from 0 to %d: \n", players[currentPlayer].playerName, (players[currentPlayer].decksize - 1));
+                        scanf("%d", &newCardChoice);
+                        getchar();
+        
+                        playedCard = players[currentPlayer].deck[newCardChoice];
+                    }
+                    
                     while ( isValidCard(pile, playedCard) == 0 ) {
                         printf("\n");
                         printf("Invalid choice, cannot play ");
@@ -371,7 +380,7 @@ int main() {
                         scanf("%d", &newCardChoice);
                         getchar();
         
-                        playedCard = players[currentPlayer].deck[cardChoice];
+                        playedCard = players[currentPlayer].deck[newCardChoice];
                     }
                     
                     
@@ -379,13 +388,10 @@ int main() {
                     addCard(pile, playedCard.name, playedCard.color);
                     printTopCard(pile);
                 
-                    // Remove the card from the player's hand
-                    if (playedCard.color != 'S') {
-                        for (k = cardChoice; k < players[currentPlayer].decksize - 1; k++) {
-                            players[currentPlayer].deck[k] = players[currentPlayer].deck[k + 1];
-                        }
-                        players[currentPlayer].decksize--;  // can't forget to update the player's deck size
+                    for (k = cardChoice; k < players[currentPlayer].decksize - 1; k++) {
+                        players[currentPlayer].deck[k] = players[currentPlayer].deck[k + 1];
                     }
+                    players[currentPlayer].decksize--;  // can't forget to update the player's deck size
                     
                     // branch if the current player has 0 cards - winner!
                     if ( (players[currentPlayer].decksize - 1) < 0) {
@@ -415,15 +421,12 @@ int main() {
                     
                 continue;
             }
-                    
-                
-            }
                 
             while ( isValidCard(pile, playedCard) == 0 ) {
                 printf("\n");
                 printf("Invalid choice, cannot play ");
                 printCard(playedCard);
-                printf(" on ");
+                printf(" on "); 
                 printCard(topCard); 
                 printf("\n");
                     
@@ -469,7 +472,6 @@ int main() {
             }
             
             currentPlayer = (currentPlayer + turnOrder + numPlayers) % numPlayers;
-            
         }
         
          // frees the memory of the pile
@@ -481,6 +483,7 @@ int main() {
         }  
         
         // Print game over message
+        // - printf("\nPlayer Two wins!\n") -- want to print the player name that wins
         printf("\nPlay again? (\"N\" or \"n\" to exit): \n");
         scanf(" %c", &playAgain);
         getchar(); // don't want the next input to be skipped
@@ -766,6 +769,7 @@ int handleAND(player *currentPlayer, player *nextPlayer, card *gameDeck, int *de
         printf("Enter card choice from 0 to %d: ", currentPlayer->decksize - 1);
         scanf("%d", &cardIndex);
         getchar();
+        printf("\n");
         
         if (cardIndex < 0 || cardIndex >= currentPlayer->decksize) {
             printf("Invalid selection!\n");
@@ -827,6 +831,7 @@ int handleOR(player *currentPlayer, player *nextPlayer, card *gameDeck, int *dec
         printf("Enter card choice from 0 to %d: ", currentPlayer->decksize - 1);
         scanf("%d", &cardIndex);
         getchar();
+        printf("\n");
         
         if (cardIndex < 0 || cardIndex >= currentPlayer->decksize) {
             printf("Invalid selection!\n");
@@ -874,31 +879,6 @@ int handleOR(player *currentPlayer, player *nextPlayer, card *gameDeck, int *dec
     }
 }
 
-// Handle effect of NOT card (aka SKIP card).
-int handleNOT(int currentPlayerIndex, int playerCount, int* playerOrder) {
-
-    // if it is just 2 players - the skip card player gets another turn
-    if (playerCount == 2) {
-        return (currentPlayerIndex + playerCount - 1) % playerCount;
-    }
-    printf("Next Player's turn skipped.\n");
-    
-     // If the order is reversed subtract 2 to skip in reverse order
-    if (*playerOrder == REVERSE_ORDER) {
-        currentPlayerIndex -= 2;
-        if (currentPlayerIndex < 0) {
-            currentPlayerIndex += playerCount;
-        }
-    } 
-    else {
-        currentPlayerIndex += 2;
-        if (currentPlayerIndex >= playerCount){
-            currentPlayerIndex -= playerCount;
-        }
-    }
-    return currentPlayerIndex;
-}
-
 int applyPenalty(player *p, card *deck, int *deckSize, int count) {
     if (*deckSize < count) {
         printf("Not enough cards left in the deck to draw.\n");
@@ -931,7 +911,7 @@ int handleNOT(int currentPlayerIndex, int playerCount, int* playerOrder) {
     if (playerCount == 2) {
         return (currentPlayerIndex + playerCount - 1) % playerCount;
     }
-    printf("Next Player's turn skipped.\n");
+    printf("Next player's turn skipped.\n");
     
      // If the order is reversed subtract 2 to skip in reverse order
     if (*playerOrder == REVERSE_ORDER) {
@@ -950,7 +930,6 @@ int handleNOT(int currentPlayerIndex, int playerCount, int* playerOrder) {
 }
 
 // Handle effect of Reverse card (reverse the turn order or in a two-player game, let current player go again
-//Handle effect of Reverse card (reverse the turn order or in a two-player game, let current player go again
 void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount){
 
     if (*reverseFlag == NORMAL_ORDER ) {
