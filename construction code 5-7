@@ -267,17 +267,19 @@ int main() {
                     for (k = cardChoice; k < players[currentPlayer].decksize - 1; k++) {
                         players[currentPlayer].deck[k] = players[currentPlayer].deck[k + 1];
                     }
-                    players[j].decksize--;  // can't forget to update the player's deck size
-                        
-                    if (currentPlayer >= (numPlayers - 2)) {
-                        andValid = handleAND(&players[currentPlayer], &players[(0 + turnOrder + numPlayers) % numPlayers], gameDeck, gameDeckSizePtr, pile);
-                        currentPlayer = 0;
+                    players[currentPlayer].decksize--;  // can't forget to update the player's deck size
+                    
+                    nextPlayer = (currentPlayer + turnOrder + numPlayers) % numPlayers;
+                    
+                    andValid = handleAND(&players[currentPlayer], &players[nextPlayer], gameDeck, gameDeckSizePtr, pile);
+                    
+                    if (turnOrder > 0) {
+                        currentPlayer = (currentPlayer + 2) % numPlayers;
                     }
                     else {
-                        andValid = handleAND(&players[currentPlayer], &players[(currentPlayer + turnOrder + numPlayers + 1) % numPlayers], gameDeck, gameDeckSizePtr, pile);
-                        currentPlayer++;
+                        currentPlayer = (currentPlayer - 2) % numPlayers;
                     }
-                        
+                    
                     if (andValid == 0) {
                         printf("Penalty applied.\n");
                     }
@@ -293,16 +295,18 @@ int main() {
                         players[currentPlayer].deck[k] = players[currentPlayer].deck[k + 1];
                     }
                     players[currentPlayer].decksize--;  // can't forget to update the player's deck size
-                        
-                    if (currentPlayer >= (numPlayers - 2)) {
-                        orValid = handleOR(&players[currentPlayer], &players[(0 + turnOrder + numPlayers) % numPlayers], gameDeck, gameDeckSizePtr, pile);
-                        currentPlayer = 0;
+                    
+                    nextPlayer = (currentPlayer + turnOrder + numPlayers) % numPlayers;
+                    
+                    orValid = handleOR(&players[currentPlayer], &players[nextPlayer], gameDeck, gameDeckSizePtr, pile);
+                    
+                    if (turnOrder > 0) {
+                        currentPlayer = (currentPlayer + 2) % numPlayers;
                     }
                     else {
-                        orValid = handleOR(&players[currentPlayer], &players[(currentPlayer + turnOrder + numPlayers + 1) % numPlayers], gameDeck, gameDeckSizePtr, pile);
-                        currentPlayer++;
+                        currentPlayer = (currentPlayer - 2) % numPlayers;
                     }
-                        
+                    
                     if (orValid == 0) {
                         printf("Penalty applied.\n");
                     }
