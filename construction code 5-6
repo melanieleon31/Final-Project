@@ -111,7 +111,7 @@ int main() {
         // Number of players needs to be between 0 and 8
         while (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS) {
             printf("\n");
-            printf("Invalid! Please enter a number of players between %d and %d\n", MIN_PLAYERS, MAX_PLAYERS);
+            printf("Invalid! Please enter a number of players between %d and %d:\n", MIN_PLAYERS, MAX_PLAYERS);
             scanf("%d", &numPlayers);
             getchar();  // Make sure the next input isn't skipped
             printf("\n");
