@@ -79,14 +79,14 @@ int main() {
 
     srand(time(0)); // get a random seed based on the current time so we get different results each run
 
-    int i, j, k, numPlayers, cardChoice;
+    int i, j, k, numPlayers, cardChoice, newCardChoice;
     char playAgain = 'y';   // initialize with y so we play at least once
     
     
     // Keep asking if the user wants to play again until they say 'no'
     while (playAgain != 'n' && playAgain != 'N'){
         
-        int ValidCount = 0;
+        int validCount = 0;
    	int gameIndex = 0;
     	int gameDeckSize = MAX_DECK;
     	int *gameDeckSizePtr = &gameDeckSize;
@@ -194,7 +194,7 @@ int main() {
                 
                 // resets validity increments
                 i = 0;
-                ValidCount = 0;
+                validCount = 0;
                 
                 // prints out each player's hand and the top card of the pile each round
                 for (k = 0; k < numPlayers; k++) {
@@ -207,7 +207,7 @@ int main() {
                     card userCard = players[j].deck[i];
                     
                     if ( isValidCard(pile, userCard) == 1 ) {
-                        ValidCount++;
+                        validCount++;
                     }
                 }
                 
@@ -216,7 +216,7 @@ int main() {
                 // FIXME: okay seems to always run once.
                 // FIXME: okay sometimes doesnt run.
                 // FIXME: i think the problem is if two people in a row don't have a valid card it just skips one
-                if (ValidCount == 0) {
+                if (validCount == 0) {
                     if ( drawCard(gameDeck, gameDeckSizePtr, &players[j]) == 1 ) {
                         printf("%s has no card that matches %c or %c, draw one and skip turn.\n", players[j].playerName, pile->top->color, pile->top->name);
                         j++;
