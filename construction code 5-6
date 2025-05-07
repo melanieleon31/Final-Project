@@ -260,9 +260,11 @@ int main() {
                     
                     printf("\n");
                     printf("%s, enter which card to play from 0 to %d: \n", players[j].playerName, players[j].decksize);
-                    scanf("%d", &cardChoice);
-                    
-                    playedCard = players[j].deck[cardChoice];
+                    scanf("%d", &newCardChoice);
+                    getchar();
+                    printf("\n");
+
+                    playedCard = players[j].deck[newCardChoice];
                 }
                 
                 addCard(pile, playedCard.name, playedCard.color);
