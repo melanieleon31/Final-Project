@@ -50,7 +50,7 @@ void freePile(played_pile *pile);
 
 int handleAND(player *currentPlayer, player *nextPlayer, card *gameDeck, int *deckSize, played_pile *pile);
 int handleOR(player *currentPlayer, player *nextPlayer, card *gameDeck, int *deckSize, played_pile *pile);
-int handleNOT(int currentPlayerIndex, int playerCount);
+int handleNOT(int currentPlayerIndex, int playerCount, int playerOrder);
 void handleReverse(int *direction, int *currentPlayerIndex, int playerCount);
 int applyPenalty(player *p, card *deck, int *deckSize, int count);
 
@@ -820,15 +820,27 @@ int applyPenalty(player *p, card *deck, int *deckSize, int count) {
 }
 
 // Handle effect of NOT card (aka SKIP card).
-int handleNOT(int currentPlayerIndex, int playerCount) {
+int handleNOT(int currentPlayerIndex, int playerCount, int playerOrder) {
 
     // if it is just 2 players - the skip card player gets another turn
     if (playerCount == 2) {
         return (currentPlayerIndex + playerCount - 1) % playerCount;
     }
-    
     printf("Next Player's turn skipped.\n");
-    currentPlayerIndex = (currentPlayerIndex + 2) % playerCount;
+    
+     // If the order is reversed subtract 2 to skip in reverse order
+    if (playerOrder == REVERSE_ORDER) {
+        currentPlayerIndex -= 2;
+        if (currentPlayerIndex < 0) {
+            currentPlayerIndex += playerCount;
+        }
+    } 
+    else {
+        currentPlayerIndex += 2;
+        if (currentPlayerIndex >= playerCount){
+            currentPlayerIndex -= playerCount;
+        }
+    }
     return currentPlayerIndex;
 }
 
