@@ -726,7 +726,7 @@ int handleNOT(int currentPlayerIndex, int playerCount) {
 //played the card will go again. If there are more than two players, the player that plays the card will
 //go again and after that the order of play will be reversed
 
-Handle effect of Reverse card (reverse the turn order or in a two-player game, let current player go again
+//Handle effect of Reverse card (reverse the turn order or in a two-player game, let current player go again
 void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount){
 
     if (*reverseFlag == NORMAL_ORDER ) {
