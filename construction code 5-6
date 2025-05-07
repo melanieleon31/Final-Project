@@ -735,9 +735,6 @@ void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount){
         *reverseFlag = NORMAL_ORDER;  // switch to normal playing order
     }
     
-    // Decrease the decksize since current player has just played reverse card
-    p->decksize--;
-    
     // game with 2 players, no index change needed
     if (playerCount == 2){
         return;
