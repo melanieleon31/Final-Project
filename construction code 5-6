@@ -506,6 +506,31 @@ int isValidCard(played_pile* pile, card candidate) {
     }
 }
 
+// Draw a single card from the deck and place it in a player's hand. Return 1 if the draw was successful, 0 if deck is empty.
+// draws from END of deck to make it easier to remove cards
+int drawCard(card* deck, int* deckSize, player *p) {
+    int success = 1;
+    int empty = 0;
+    
+    if (*deckSize <= 0){
+        return empty;
+    }
+    
+    card pickedCard = deck[*deckSize - 1];
+    
+    p->deck = realloc(p->deck, (p->decksize + 1) * sizeof(card));
+    if (p->deck == NULL) {
+        return empty;
+    }
+    
+    p->deck[p->decksize] = pickedCard;
+    p->decksize++;
+    
+    (*deckSize)--;
+    
+    return success;
+}
+
 // test functions for the pile: creating and erasing the pile, along with adding and printing the top card (NOT FINAL)
 // again, feel free to mess with these, change the parameters, etc. if anything stops working or doesn't work as it should
 
