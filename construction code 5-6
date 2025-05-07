@@ -76,18 +76,20 @@ int main() {
     srand(time(0)); // get a random seed based on the current time so we get different results each run
 
     int i, j, numPlayers;
-    int gameIndex = 0;
-    card gameDeck[MAX_CARDS];  // will hold the deck of cards
-    
-    
-    initializeDeck(gameDeck, MAX_CARDS);  // create a fresh deck
-    shuffleDeck(gameDeck);  // shuffle the deck
     char playAgain = 'y';   // initialize with y so we play at least once
-    int firstCard;    // Store player one's first card index
     
     
     // Keep asking if the user wants to play again until they say 'no'
     while (playAgain != 'n' && playAgain != 'N'){
+        
+        int gameIndex = 0;
+        card gameDeck[MAX_CARDS];  // will hold the deck of cards
+    
+    
+        initializeDeck(gameDeck, MAX_CARDS);  // create a fresh deck
+        shuffleDeck(gameDeck);  // shuffle the deck
+        int firstCard;    // Store player one's first card index
+    
         
         // Get the number of players
         printf("Enter number of players: \n");
