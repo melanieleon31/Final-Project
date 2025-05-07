@@ -1,5 +1,7 @@
 # Final-Project
 
+5/6 update: the while loop from last night is working now. Just needed to put int firstCardCheck = 0 within the loop to reset the counter
+
 5/5 10:00 PM
 
 I set up a while loop so the whole game can repeat starting from initializing the deck and to where the user will be asked if they want to play again. I have also set up for the first player to add the first card to the pile. I'm working on the actual gameplay loop now. 
