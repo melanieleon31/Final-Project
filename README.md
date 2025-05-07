@@ -1,6 +1,10 @@
 # Final-Project
 
-5/6 update: the while loop from last night is working now. Just needed to put int firstCardCheck = 0 within the loop to reset the counter
+5/6 update: 
+
+create the special functions, including the handleReverse, may need to be tweaked
+
+the while loop from last night is working now. Just needed to put int firstCardCheck = 0 within the loop to reset the counter
 
 5/5 10:00 PM
 
