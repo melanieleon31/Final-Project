@@ -276,7 +276,7 @@ int main() {
                 players[j].decksize--;  // can't forget to update the player's deck size
                 
                 // branch if the current player has 0 cards - winner!
-                if (players[j].decksize == 0) {
+                if ((players[j].decksize - 1) < 0) {
                     printf("%s wins!\n", players[j].playerName);
                     w = 1;
                     break; 
@@ -304,12 +304,6 @@ int main() {
             }
         }
         
-        /*
-        // adds and prints the card at the top of the pile
-        addCard(pile, '5', 'R'); // Red 5
-        printTopCard(pile); // should print "Top of card pile is: Red 5"
-        */
-        
         // frees the memory of the pile
         freePile(pile);
         
@@ -319,7 +313,6 @@ int main() {
         }  
         
         // Print game over message
-        // - printf("\nPlayer Two wins!\n") -- want to print the player name that wins
         printf("\nPlay again? (y/n)?: \n");
         scanf(" %c", &playAgain);
         getchar(); // don't want the next input to be skipped
