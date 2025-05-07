@@ -42,6 +42,7 @@ void printCard(card c);
 void printPlayerHand(player *p);
 
 int isValidCard(played_pile* pile, card candidate);
+int drawCard(card *deck, int *deckSize, player *p);
 
 // functions for testing the linked lists (probably able to keep them for the final code)
 void addCard(played_pile *pile, char name, char color);
