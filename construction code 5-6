@@ -51,6 +51,7 @@ void freePile(played_pile *pile);
 int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
 int handleOR(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
 int handleNOT(int currentPlayerIndex, int playerCount);
+void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount, player* p);
 
 
 // test functions - - - - - - - - - -
