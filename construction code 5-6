@@ -46,10 +46,9 @@ void addCard(played_pile *pile, char name, char color);
 void printTopCard(played_pile *pile);
 void freePile(played_pile *pile);
 
-// // Handle effect of AND card. This could check the next player’s hand for the correct color AND number (return 1), or apply a penalty if they cannot match (return 0)
-//int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
-//int handleOR(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
-//int handleNOT(int currentPlayerIndex, int playerCount);
+int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
+int handleOR(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
+int handleNOT(int currentPlayerIndex, int playerCount);
 
 
 // test functions - - - - - - - - - -
@@ -346,32 +345,27 @@ void printPlayerHand(player *p) {
 void printNumLabel(int numOfPlayer) {
     if (numOfPlayer == 1) {
         printf("first");
-    } else if (numOfPlayer == 2) {
+    } 
+    else if (numOfPlayer == 2) {
         printf("second");
-    } else if (numOfPlayer == 3) {
+    } 
+    else if (numOfPlayer == 3) {
         printf("third");
-    } else if (numOfPlayer == 4) {
+    } 
+    else if (numOfPlayer == 4) {
         printf("fourth");
-    } else if (numOfPlayer == 5) {
+    } 
+    else if (numOfPlayer == 5) {
         printf("fifth");
-    } else if (numOfPlayer == 6) {
+    } 
+    else if (numOfPlayer == 6) {
         printf("sixth");
-    } else if (numOfPlayer == 7) {
+    } 
+    else if (numOfPlayer == 7) {
         printf("seventh");
-    } else if (numOfPlayer == 8) {
+    } 
+    else if (numOfPlayer == 8) {
         printf("eighth");
-    } else if (numOfPlayer == 9) {
-        printf("ninth");
-    } else if (numOfPlayer == 10) {
-        printf("tenth");
-    } else if (numOfPlayer == 11) {
-        printf("eleventh");
-    } else if (numOfPlayer == 12) {
-        printf("twelfth");
-    } else if (numOfPlayer == 13) {
-        printf("thirteenth");
-    } else if (numOfPlayer == 14) {
-        printf("fourteenth");
     }
 }
 
@@ -578,15 +572,15 @@ int handleNOT(int currentPlayerIndex, int playerCount) {
     if (playerCount == 2) {
         return currentPlayerIndex;
     }
-    // if the last player used the skip card, player one will need to be skipped
+    // if the last player used the skip card, player one will be skipped
     if (currentPlayerIndex + 1 == playerCount) {
         int indexZero = 0;
         printf("Next Player’s turn skipped.\n");
         return indexZero;  
     } 
-    else {
+    else { // normally the next player will be skipepd
         printf("Next Player’s turn skipped.\n");
-        return currentPlayerIndex + 1;  // otherwise, the next player will be skipped
+        return currentPlayerIndex + 1;  
     }
 }
 */
