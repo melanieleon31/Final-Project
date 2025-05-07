@@ -93,6 +93,8 @@ int main() {
         initializeDeck(gameDeck, 100);  // create a fresh deck
         shuffleDeck(gameDeck);  // shuffle the deck
         int firstCard;    // Store player one's first card index
+        int currentPlayer = 0;
+        int* currentPlayerPtr = &currentPlayer;
         
         // Get the number of players
         printf("Enter number of players: \n");
@@ -184,8 +186,6 @@ int main() {
         int w = 0;
         while (w == 0) {
             
-            int currentPlayer = 0;
-            int* currentPlayerPtr = &currentPlayer;
                 
             if (firstCardCheck == 1) {
                 currentPlayer++;
@@ -869,5 +869,3 @@ void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount){
         }
     }
 }
-
-
