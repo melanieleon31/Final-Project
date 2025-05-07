@@ -212,7 +212,7 @@ int main() {
                 }
                 
                 // if the user has no cards that match, forces them to draw and skips entry
-                if (ValidCount == 0) {
+                if (validCount == 0) {
                     if ( drawCard(gameDeck, gameDeckSizePtr, &players[j]) == 1 ) {
                         printf("%s has no card that matches %c or %c, draw one and skip turn.\n", players[j].playerName, pile->top->color, pile->top->name);
                         if (j < (numPlayers - 1) ) {
