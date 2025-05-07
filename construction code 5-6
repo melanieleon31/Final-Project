@@ -298,7 +298,7 @@ int main() {
             }
         }
         
-        
+        */
         // adds and prints the card at the top of the pile
         addCard(pile, '5', 'R'); // Red 5
         printTopCard(pile); // should print "Top of card pile is: Red 5"
@@ -594,7 +594,7 @@ void freePile(played_pile *pile) {
 }
 
 // Handle effect of AND card. This could check the next player’s hand for the correct color AND number (return 1), or apply draw 4 penalty if they cannot match (return 0)
-/*int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile){
+int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile){
     
     // check the player's hand for a matching card 
     for (int i = 0; i < nextPlayer->decksize; i++) {
@@ -768,4 +768,4 @@ void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount, p
     }
 }
 
-*/
+
