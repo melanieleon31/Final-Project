@@ -298,7 +298,7 @@ int main() {
             }
         }
         
-        */
+        /*
         // adds and prints the card at the top of the pile
         addCard(pile, '5', 'R'); // Red 5
         printTopCard(pile); // should print "Top of card pile is: Red 5"
