@@ -212,14 +212,18 @@ int main() {
                 }
                 
                 // if the user has no cards that match, forces them to draw and skips entry
-                // FIXME: only runs once and doesn't seem to loop again?
-                // FIXME: okay seems to always run once.
-                // FIXME: okay sometimes doesnt run.
-                // FIXME: i think the problem is if two people in a row don't have a valid card it just skips one
-                if (validCount == 0) {
+                if (ValidCount == 0) {
                     if ( drawCard(gameDeck, gameDeckSizePtr, &players[j]) == 1 ) {
                         printf("%s has no card that matches %c or %c, draw one and skip turn.\n", players[j].playerName, pile->top->color, pile->top->name);
-                        j++;
+                        if (j < (numPlayers - 1) ) {
+                            continue;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+                    else {
+                        printf("Error with draw deck.\n");
                     }
                 }
                 
