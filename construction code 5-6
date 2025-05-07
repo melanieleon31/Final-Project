@@ -169,20 +169,19 @@ int main() {
                printf("Invalid choice, first pile card cannot be a special card\n");
             }
             else {
+		// put the first card on the pile
+                card played = players[0].deck[firstCard];
+                addCard(pile, played.name, played.color);
+            
+                // Remove the card from the player's hand
+                for (i = firstCard; i < players[0].decksize - 1; i++) {
+                    players[0].deck[i] = players[0].deck[i + 1];
+                }
+                players[0].decksize--;  // can't forget to update the player's deck size
                 firstCardCheck = 1;  // card looks good
             }
     
         }
-        
-        // put the first card on the pile
-        card played = players[0].deck[firstCard];
-        addCard(pile, played.name, played.color);
-
-        //rRemove the card from the player's hand
-        for (j = firstCard; j < players[0].decksize - 1; j++) {
-            players[0].deck[j] = players[0].deck[j + 1];
-        }
-        players[0].decksize--;  // can't forget to update the player's deck size
 
         
     
