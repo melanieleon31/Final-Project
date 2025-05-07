@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_CARDS 100
+#define MAX_DECK 100
 #define START_DECKSIZE 7 
 #define MAX_PLAYERS 8 
 #define MIN_PLAYERS 2
@@ -360,8 +360,8 @@ void shuffleDeck(card *deck) {
     for (int i = 0; i < MAX_SHUFFLE; i++) {
         
         // get two random number 0-99 for the index's
-        int first = rand() % MAX_CARDS;  
-        int second = rand() % MAX_CARDS;
+        int first = rand() % MAX_DECK;  
+        int second = rand() % MAX_DECK;
         
         card temp = deck[first];
         deck[first] = deck[second];
@@ -625,7 +625,7 @@ void freePile(played_pile *pile) {
 
     // add 4 cards from deck to player's hand
     for (int i = 0; i < DRAW_PENALTY; i++) {
-        if (*deckIndex < MAX_CARDS) {
+        if (*deckIndex < MAX_DECK) {
         
             // See if we need a bigger hand size for the player
             card *temp = (card *)realloc(nextPlayer->deck, (nextPlayer->decksize + 1) * sizeof(card));
@@ -680,7 +680,7 @@ int handleOR(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int 
 
     // add 4 cards from deck to player's hand
     for (int i = 0; i < DRAW_PENALTY; i++) {
-        if (*deckIndex < MAX_CARDS) {
+        if (*deckIndex < MAX_DECK) {
         
             // See if we need a bigger hand size for the player
             card *temp = (card *)realloc(nextPlayer->deck, (nextPlayer->decksize + 1) * sizeof(card));
