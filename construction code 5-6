@@ -5,7 +5,7 @@
 
 #define MAX_CARDS 100
 #define START_DECKSIZE 7 
-#define MAX_PLAYERS 8
+#define MAX_PLAYERS 8 
 #define MIN_PLAYERS 2
 #define MAX_SHUFFLE 10000
 #define DRAW_PENALTY 4
@@ -48,7 +48,7 @@ void freePile(played_pile *pile);
 
 // // Handle effect of AND card. This could check the next player’s hand for the correct color AND number (return 1), or apply a penalty if they cannot match (return 0)
 //int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
-
+//int handleOR(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
 
 
 // test functions - - - - - - - - - -
@@ -75,7 +75,7 @@ int main() {
 
     srand(time(0)); // get a random seed based on the current time so we get different results each run
 
-    int i, j, numPlayers;
+    int i, j, k, w, numPlayers, cardChoice;
     char playAgain = 'y';   // initialize with y so we play at least once
     
     
@@ -496,17 +496,96 @@ void freePile(played_pile *pile) {
         if (*deckIndex < MAX_CARDS) {
         
             // See if we need a bigger hand size for the player
-            card *newDeck = (card *)realloc(nextPlayer->deck, (nextPlayer->decksize + 1) * sizeof(card));
-            if (newDeck == NULL) {
+            card *temp = (card *)realloc(nextPlayer->deck, (nextPlayer->decksize + 1) * sizeof(card));
+            if (temp == NULL) {
                 printf("Failed to allocate memory while drawing cards.\n");
                 return -1;
             }
-            nextPlayer->deck = newDeck;
+            nextPlayer->deck = temp;
             nextPlayer->deck[nextPlayer->decksize] = gameDeck[*deckIndex]; // grab a card from the main deck and add it to player's hand
             nextPlayer->decksize++; // player has one more card now
             (*deckIndex)++; // Move to the next card in the main deck
         }
+        else {
+            printf("No more cards in the deck left to draw\n");
+            return 2;  // no more cards in deck to pull from
+        }
     }
 	
 	    return 0;  // Return 0 if no match is found, and the player has drawn 4 cards
-}*/
+}
+
+
+// Handle effect of OR card. Similar logic, except the next player must match color OR number or face the penalty.
+int handleOR(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile){
+
+    // check the player's hand for a matching card 
+    for (int i = 0; i < nextPlayer->decksize; i++) {
+	   if (nextPlayer->deck[i].color == topOfPile.color || nextPlayer->deck[i].name == topOfPile.name) {
+	            
+        printf("Card Matches, no OR penalty\n");
+
+        // hold on to the card that will be added to pile
+        card pileCard = nextPlayer->deck[i];
+
+        // take out the card from the players hand & move the rest over to fill open space
+        for (int j = i; j < nextPlayer->decksize - 1; j++) {
+            nextPlayer->deck[j] = nextPlayer->deck[j + 1];
+        }
+        nextPlayer->decksize--; // Decrease deck size since player has one less card
+
+        // Add the card to the played pile
+        addCard(pile, pileCard.name, pileCard.color);
+
+        return 1;  // match found
+        }
+    }
+	
+    // No match: player draws 4
+    printf("%s has no card that matches %s or %d\n", nextPlayer->playerName, topOfPile.color, topOfPile.name);
+    printf("\n");
+    printf("OR penalty, Draw 4\n");
+
+    // add 4 cards from deck to player's hand
+    for (int i = 0; i < DRAW_PENALTY; i++) {
+        if (*deckIndex < MAX_CARDS) {
+        
+            // See if we need a bigger hand size for the player
+            card *temp = (card *)realloc(nextPlayer->deck, (nextPlayer->decksize + 1) * sizeof(card));
+            if (temp == NULL) {
+                printf("Failed to allocate memory while drawing cards.\n");
+                return -1;
+            }
+            nextPlayer->deck = temp;
+            nextPlayer->deck[nextPlayer->decksize] = gameDeck[*deckIndex]; // grab a card from the main deck and add it to player's hand
+            nextPlayer->decksize++; // player has one more card now
+            (*deckIndex)++; // Move to the next card in the main deck
+        }
+        else {
+            printf("No more cards in the deck left to draw\n");
+            return 2;  // no more cards in deck to pull from
+        }
+    }
+	
+	    return 0;  // Return 0 if no match is found, and the player has drawn 4 cards
+}
+
+// Handle effect of NOT card (aka SKIP card).
+int handleNOT(int currentPlayerIndex, int playerCount) {
+
+    // if it is just 2 players - the skip card player gets another turn
+    if (playerCount == 2) {
+        return currentPlayerIndex;
+    }
+    // if the last player used the skip card, player one will need to be skipped
+    if (currentPlayerIndex + 1 == playerCount) {
+        int indexZero = 0;
+        printf("Next Player’s turn skipped.\n");
+        return indexZero;  
+    } 
+    else {
+        printf("Next Player’s turn skipped.\n");
+        return currentPlayerIndex + 1;  // otherwise, the next player will be skipped
+    }
+}
+*/
