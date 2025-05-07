@@ -79,7 +79,7 @@ int main() {
 
     srand(time(0)); // get a random seed based on the current time so we get different results each run
 
-    int i, j, k, w, numPlayers, cardChoice;
+    int i, j, k, numPlayers, cardChoice;
     char playAgain = 'y';   // initialize with y so we play at least once
     
     
