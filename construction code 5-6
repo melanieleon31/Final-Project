@@ -270,7 +270,7 @@ int main() {
                 players[j].decksize--;  // can't forget to update the player's deck size
                 
                 // branch if the current player has 0 cards - winner!
-                if (players[j].decksize < 0) {
+                if (players[j].decksize == 0) {
                     printf("%s wins!\n", players[j].playerName);
                     w = 1;
                     break; 
