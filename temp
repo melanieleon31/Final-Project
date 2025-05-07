@@ -54,26 +54,6 @@ int handleOR(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int 
 int handleNOT(int currentPlayerIndex, int playerCount);
 void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount);
 
-
-// test functions - - - - - - - - - -
-
-    /** test to make sure names were printing (can eventually delete)
-    for (i = 0; i < numPlayers; i++) {
-        printf("%d %s\n", i + 1, players[i].playerName);
-    }
-    **/
-    
-    /** test that prints out the first 10 cards, to make sure the deck/shuffle is working correctly
-    for (i = 0; i < 10; i++) {
-        printf("Card %d: %c and %c\n", (i + 1), gameDeck[i].name, gameDeck[i].color);
-    }
-   **/
-   
-   /** tests adding a card to the pile and printing the new top card
-    addCard(pile, '5', 'R'); // Red 5
-    printTopCard(pile); // Should print "Top of card pile is: Red 5"
-   **/
-
 // main function - - - - - - - - - -
 int main() {
 
@@ -87,7 +67,7 @@ int main() {
     while (playAgain != 'n' && playAgain != 'N'){
         
         int validCount = 0;
-   	int gameIndex = 0;
+   	    int gameIndex = 0;
     	int gameDeckSize = MAX_DECK;
     	int *gameDeckSizePtr = &gameDeckSize;
     	card gameDeck[MAX_DECK];  // will hold the deck of cards
@@ -274,6 +254,126 @@ int main() {
                     players[j].deck[k] = players[j].deck[k + 1];
                 }
                 players[j].decksize--;  // can't forget to update the player's deck size
+                
+                
+                // special 
+                
+                int result;
+                int canPairIndex;
+                
+                if (playedCard.color == 'S') {
+                    
+                    if (playedCard.name == 'A') {
+                        int canPair = 0;
+                        
+                        // make sure player has a number card in their hand to pair with AND card
+                        for (i = 0; i < players[j].decksize; i++) {
+                            if (players[j].deck[i].name != 'A' && players[j].deck[i].name != 'N' && players[j].deck[i].name != 'R' && players[j].deck[i].name != 'O') {
+                                canPair = 1;  
+                                break;
+                            }
+                        } 
+                        
+                        if (canPair == 0){
+                            printf("Invalid. You do not have a regular 0-9 card to pair with AND\n");
+                            continue;
+                        }
+                        
+                        //Remove the card from the player's hand
+                        card andCard = players[j].deck[cardChoice]; 
+                        addCard(pile, playedCard.name, playedCard.color);
+                        
+                        for (i = cardChoice; i < players[j].decksize - 1; i++) {
+                            players[j].deck[i] = players[j].deck[i + 1];
+                        }
+
+                        players[j].decksize--;  // Update the deck size after playing the AND card
+                        
+                    
+                        printf("Choose the card to play with AND ->");
+                        for (i = 0; i <= players[j].decksize; i++) {
+                            if (i != cardChoice){
+                                printf(" %d", i);  //TEST ME: might need to adjust this
+                            }
+                        }
+                        printf("\n");
+                        
+                        // get card index from user that they would like to pair with AND
+                        scanf("%d", &canPairIndex);
+                        getchar();
+                        
+                        // make sure it's a valid index and not a special card
+                        while (canPairIndex < 0 || canPairIndex >= players[j].decksize || players[j].deck[canPairIndex].color == 'S'){
+                            
+                            if (players[j].deck[canPairIndex].color == 'S') {
+                                printf("Cannot play two special cards in one turn\n");
+                            }
+                            
+                            // Ask for index again
+                            printf("Choose the card to play with AND ->");
+                            for (i = 0; i <= players[j].decksize; i++) {
+                                if (i != cardChoice){
+                                    printf(" %d", i);
+                                }
+                            }
+                            
+                            printf("\n");
+                            scanf("%d", &canPairIndex);
+                            getchar();
+                        }
+                            
+                        
+                            
+                        // where to store the card they chose
+                       // might not need this ---- card pairedCard = players[j].deck[canPairIndex];
+                        
+                        
+                        playedCard = players[j].deck[canPairIndex];
+                        
+                        addCard(pile, andCard.name, andCard.color);
+                        
+                        
+                        
+                        
+                         // Remove the paired card from the hand
+                        for (i = canPairIndex; i < players[j].decksize - 1; i++) {
+                            players[j].deck[i] = players[j].deck[i + 1];
+                        }
+                        
+                        players[j].decksize--;  // Update the deck size after playing the paired number card
+                        
+                        
+                        printf("Top of card pile is: %c %c with AND\n", pile->top->color, pile->top->name);
+                        printf("\n");
+                        
+                        
+                        // hand handleAND logic  
+                        result = handleAND(&players[j], &players[(j + 1) % numPlayers], *pile->top, gameDeck, gameDeckSizePtr, pile);
+                        //played.name, played.color
+                        
+                       //DELETE printf("%s has no card that matches %s AND %d\n", players[(j + 1) % numPlayers].playerName, topCard.color, topCard.name);
+                        
+                        if (result == 1){
+                            printf("Card Matches, no AND penalty\n");
+                        }
+                        else if (result == 0) {
+                            // No match: player draws 4
+                            printf("%s has no card that matches %c AND %c\n", players[(j + 1) % numPlayers].playerName, pile->top->color, pile->top->name);
+                            //pile->top->color, pile->top->name);
+                            //%s and %d\n"
+                            //printTopCard(pile); 
+                            printf("\n");
+                            printf("AND penalty, Draw 4\n");
+                        } 
+                        else if (result == 2) {
+                            printf("No more cards in the deck left to draw\n");
+                        }
+                        else if (result == -1){
+                            printf("Failed to allocate memory while drawing cards.\n");
+                        }                      
+                    }
+                    
+                }
                 
                 // branch if the current player has 0 cards - winner!
                 if ((players[j].decksize - 1) < 0) {
@@ -487,21 +587,31 @@ int isValidCard(played_pile* pile, card candidate) {
     int valid = 1;
     int not_valid = 0;
     
-    pileTopCard.name = pile->top->name;
-    pileTopCard.color = pile->top->color;
-    
     // if there's nothing in the pile, anything can be placed
     if (pile->top == NULL) {
         return valid;
     }
-    // if the colors or numbers match, or a special card is being placed, then these are valid
-    else if ( (candidate.color == 'S') || (pileTopCard.color == 'S') || (candidate.color == pileTopCard.color) || (candidate.name == pileTopCard.name) ) {
+    
+    pileTopCard.name = pile->top->name;
+    pileTopCard.color = pile->top->color;
+
+    if (candidate.color == 'S') { // a special card cannot be played on top of a special card
+        if (pileTopCard.name >= '0' && pileTopCard.name <= '9') {
+            return valid;
+        }
+        else {
+            return not_valid;
+        }
+    }
+    if (pileTopCard.color == 'S') {
         return valid;
     }
     // any other option/combination
-    else {
-        return not_valid;
+    if (candidate.color == pileTopCard.color || candidate.name == pileTopCard.name){
+        return valid;
     }
+        
+    return not_valid;
 }
 
 // Draw a single card from the deck and place it in a player's hand. Return 1 if the draw was successful, 0 if deck is empty.
@@ -597,8 +707,6 @@ int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int
     // check the player's hand for a matching card 
     for (int i = 0; i < nextPlayer->decksize; i++) {
 	   if (nextPlayer->deck[i].color == topOfPile.color && nextPlayer->deck[i].name == topOfPile.name) {
-	            
-        printf("Card Matches, no AND penalty\n");
 
         // hold on to the card that will be added to pile
         card pileCard = nextPlayer->deck[i];
@@ -617,9 +725,6 @@ int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int
     }
 	
     // No match: player draws 4
-    printf("%s has no card that matches %s and %d\n", nextPlayer->playerName, topOfPile.color, topOfPile.name);
-    printf("\n");
-    printf("AND penalty, Draw 4\n");
 
     // add 4 cards from deck to player's hand
     for (int i = 0; i < DRAW_PENALTY; i++) {
@@ -628,7 +733,6 @@ int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int
             // See if we need a bigger hand size for the player
             card *temp = (card *)realloc(nextPlayer->deck, (nextPlayer->decksize + 1) * sizeof(card));
             if (temp == NULL) {
-                printf("Failed to allocate memory while drawing cards.\n");
                 return -1;
             }
             nextPlayer->deck = temp;
@@ -637,7 +741,6 @@ int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int
             (*deckIndex)++; // Move to the next card in the main deck
         }
         else {
-            printf("No more cards in the deck left to draw\n");
             return 2;  // no more cards in deck to pull from
         }
     }
