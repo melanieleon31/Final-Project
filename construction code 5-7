@@ -77,7 +77,7 @@ int applyPenalty(player *p, card *deck, int *deckSize, int count);
 int main() {
     srand(time(0)); // get a random seed based on the current time so we get different results each run
 
-    int i, j, k, numPlayers, cardChoice, newCardChoice;
+    int i, j, k, numPlayers, cardChoice, newCardChoice, nextPlayer;
     int *jPtr = &j;
     int ValidCount = 0;
     char playAgain = 'y';   // initialize with y so we play at least once
