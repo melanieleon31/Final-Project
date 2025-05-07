@@ -52,7 +52,7 @@ void freePile(played_pile *pile);
 int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
 int handleOR(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
 int handleNOT(int currentPlayerIndex, int playerCount);
-void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount, player* p);
+void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount);
 
 
 // test functions - - - - - - - - - -
@@ -726,7 +726,7 @@ int handleNOT(int currentPlayerIndex, int playerCount) {
 //go again and after that the order of play will be reversed
 
 Handle effect of Reverse card (reverse the turn order or in a two-player game, let current player go again
-void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount, player* p){
+void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount){
 
     if (*reverseFlag == NORMAL_ORDER ) {
         *reverseFlag = REVERSE_ORDER;  // reverse playing order 
@@ -737,9 +737,6 @@ void handleReverse(int* reverseFlag, int* currentPlayerIndex, int playerCount, p
     
     // Decrease the decksize since current player has just played reverse card
     p->decksize--;
-    
-    // ask the same player to play another card
-    printf("%s, enter which card to play from 0 to %d: \n", p->playerName, p->decksize - 1);
     
     // game with 2 players, no index change needed
     if (playerCount == 2){
