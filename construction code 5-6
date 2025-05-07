@@ -49,6 +49,7 @@ void freePile(played_pile *pile);
 // // Handle effect of AND card. This could check the next player’s hand for the correct color AND number (return 1), or apply a penalty if they cannot match (return 0)
 //int handleAND(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
 //int handleOR(player *p, player *nextPlayer, card topOfPile, card *gameDeck, int *deckIndex, played_pile *pile);
+//int handleNOT(int currentPlayerIndex, int playerCount);
 
 
 // test functions - - - - - - - - - -
