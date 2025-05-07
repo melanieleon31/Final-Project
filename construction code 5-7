@@ -206,7 +206,7 @@ int main() {
             for (i = 0; i < players[currentPlayer].decksize; i++) {
                 card userCard = players[currentPlayer].deck[i];
                     
-                if ( isValidCard(pile, userCard) == 1 ) {
+                if (isValidCard(pile, userCard) == 1){
                     validCount++;
                 }
             }
