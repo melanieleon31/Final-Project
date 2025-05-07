@@ -484,7 +484,6 @@ void printNumLabel(int numOfPlayer) {
 
 // Check if a candidate card is valid to play on the top-of-pile card. Return 1 if valid, 0 otherwise.
 // note: changed the parameters from what's on the sheet, this is said to be allowed as long as the function name itself is the same so we should be okay
-// extra note: need to make it so we can actually input which card to add to test it i think. oopsies
 int isValidCard(played_pile* pile, card candidate) {
     card pileTopCard;
     int valid = 1;
