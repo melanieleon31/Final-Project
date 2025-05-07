@@ -86,13 +86,14 @@ int main() {
     // Keep asking if the user wants to play again until they say 'no'
     while (playAgain != 'n' && playAgain != 'N'){
         
-        int gameIndex = 0;
-        card gameDeck[MAX_CARDS];  // will hold the deck of cards
-    
-    
-        initializeDeck(gameDeck, MAX_CARDS);  // create a fresh deck
-        shuffleDeck(gameDeck);  // shuffle the deck
-        int firstCard;    // Store player one's first card index
+        int ValidCount = 0;
+   	int gameIndex = 0;
+    	int gameDeckSize = MAX_DECK;
+    	int *gameDeckSizePtr = &gameDeckSize;
+    	card gameDeck[MAX_DECK];  // will hold the deck of cards
+    	initializeDeck(gameDeck, MAX_DECK);  // create a fresh deck
+    	shuffleDeck(gameDeck);  // shuffle the deck
+    	int firstCard;    // Store player one's first card index
     
         
         // Get the number of players
